@@ -29,12 +29,18 @@
         node      = initNode(),
         svg       = null,
         point     = null,
-        target    = null
+        target    = null,
+        tipParent = document.body,
+        scrollReference = document.documentElement || document.body
 
-    function tip(vis) {
-      svg = getSVGNode(vis)
-      point = svg.createSVGPoint()
-      document.body.appendChild(node)
+    function tip(vis, providedTipParent) {
+      if (providedTipParent) {
+        tipParent = providedTipParent;
+        scrollReference = tipParent;
+      }
+      svg = getSVGNode(vis);
+      point = svg.createSVGPoint();
+      tipParent.appendChild(node);
     }
 
     // Public - show the tooltip on the screen
@@ -50,8 +56,8 @@
           nodel   = getNodeEl(),
           i       = directions.length,
           coords,
-          scrollTop  = document.documentElement.scrollTop || document.body.scrollTop,
-          scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
+          scrollTop  = scrollReference.scrollTop,
+          scrollLeft = scrollReference.scrollLeft
 
       nodel.html(content)
         .style({ opacity: 1, 'pointer-events': 'all' })
@@ -263,7 +269,7 @@
       if(node === null) {
         node = initNode();
         // re-add node to DOM
-        document.body.appendChild(node);
+        tipParent.appendChild(node);
       };
       return d3.select(node);
     }
